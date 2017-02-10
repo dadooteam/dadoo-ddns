@@ -77,8 +77,10 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
                         if (!error && response.statusCode === 200) {
                             let name = record.name
                             console.log(`${name}更新ip成功，当前ip为${ip}`)
+                            resolve(body)
                         } else {
                             console.error(`更新${name}的ip地址失败`)
+                            reject(error)
                         }
                     })
                 }))
@@ -89,10 +91,10 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
         console.log(error)
     }).then((body) => {
         console.log(body)
-        console.log('本轮动态域名解析结束')
+        console.log('本轮动态域名解析成功')
     }, (error) => {
         console.log(error)
-        console.log('本轮动态域名解析结束')
+        console.log('本轮动态域名解析失败')
     })
 })
 cronJob.start()
