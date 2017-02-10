@@ -31,7 +31,7 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
                 reject(error)
             }
         })
-    }).then((body) => {
+    }).then(body => {
         ip = eval(body)
         console.log(`ip地址为${ip}`)
         return new Promise((resolve, reject) => {
@@ -43,9 +43,7 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
                 }
             })
         })
-    }, (error) => {
-        console.log(error)
-    }).then((body) => {
+    }, error => console.log(error)).then(body => {
         for (let domain of body.domains) {
             if (domain.name === DOMAIN) {
                 form['domain_id'] = domain.id
@@ -60,9 +58,7 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
                 })
             }
         }
-    }, (error) => {
-        console.log(error)
-    }).then((body) => {
+    }, error => console.log(error)).then(body => {
         let plist = []
         for (let record of body.records) {
             if (RECORDS.has(record.name) && record.value !== ip) {
@@ -75,26 +71,21 @@ let cronJob = new cron.CronJob('0 * * * * *', () => {
                 plist.push(new Promise((resolve, reject) => {
                     request.post(DDNS_UPDATE_URL, {headers, form}, (error, response, body) => {
                         if (!error && response.statusCode === 200) {
-                            let name = record.name
-                            console.log(`${name}更新ip成功，当前ip为${ip}`)
-                            resolve(body)
+                            resolve(record.name)
                         } else {
-                            console.error(`更新${name}的ip地址失败`)
-                            reject(error)
+                            reject(record.name)
                         }
                     })
-                }))
+                }).then(
+                    name => console.log(`${name}更新ip成功，当前ip为${ip}`), 
+                    name => console.error(`更新${name}的ip地址失败`)
+                ))
             }
         }
         return Promise.all(plist)
-    }, (error) => {
-        console.log(error)
-    }).then((body) => {
-        console.log(body)
-        console.log('本轮动态域名解析成功')
-    }, (error) => {
-        console.log(error)
-        console.log('本轮动态域名解析失败')
-    })
+    }, error => console.log(error)).then(
+        () => console.log('本轮动态域名解析成功'), 
+        () => console.log('本轮动态域名解析失败')
+    )
 })
 cronJob.start()
