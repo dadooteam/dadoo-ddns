@@ -1,5 +1,13 @@
 var log4js = require('log4js')
-log4js.configure('./log4js.json')
+
+log4js.configure({
+    appenders: [
+        {
+            type: 'console'
+        }
+    ],
+    level: log4js.levels.INFO
+})
 
 module.exports = {
     ID: 24476,
