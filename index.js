@@ -20,7 +20,7 @@ let cronJob = new cron.CronJob(context.CRON, () => {
                 reject(error)
             }
         })
-    }).then((body) => {
+    }).then(body => {
         ip = eval(body)
         LOGGER.info(`ip地址为${ip}`)
         return new Promise((resolve, reject) => {
@@ -72,7 +72,10 @@ let cronJob = new cron.CronJob(context.CRON, () => {
                             reject(error)
                         }
                     })
-                }))
+                }).then(
+                    name => console.log(`${name}更新ip成功，当前ip为${ip}`), 
+                    name => console.error(`更新${name}的ip地址失败`)
+                ))
             }
         }
         return Promise.all(plist)
