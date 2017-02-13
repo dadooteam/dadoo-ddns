@@ -73,8 +73,8 @@ let cronJob = new cron.CronJob(context.CRON, () => {
                         }
                     })
                 }).then(
-                    name => console.log(`${name}更新ip成功，当前ip为${ip}`), 
-                    name => console.error(`更新${name}的ip地址失败`)
+                    name => LOGGER.info(`${name}更新ip成功，当前ip为${ip}`), 
+                    name => LOGGER.error(`更新${name}的ip地址失败`)
                 ))
             }
         }
