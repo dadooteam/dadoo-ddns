@@ -34,7 +34,7 @@ public class Job {
   @Autowired
   private DnsPodCo dnsPodCo;
 
-  @Scheduled(cron = "0 */1 * * * ?")
+  @Scheduled(cron = "0 */5 * * * ?")
   public void execute() {
     try {
       MLOGGER.info("动态域名解析开始");
